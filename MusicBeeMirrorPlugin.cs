@@ -115,7 +115,6 @@ namespace MusicBeePlugin
                 if (myForm.serverButton.Checked && isFromRemoteClient == false)
                 {
                     //Notification is coming from the server, throw it away for now until full mirror mode is implemented
-                    ProcessNotification(sourceFileUrl, type);
                 }
                 else if (myForm.serverButton.Checked && isFromRemoteClient)
                 {
