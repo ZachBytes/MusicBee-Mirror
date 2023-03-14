@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Diagnostics;
+using static System.Net.WebRequestMethods;
 
 namespace MusicBeePlugin
 {
@@ -16,6 +17,7 @@ namespace MusicBeePlugin
         public static Plugin _MusicBeeMirrorPlugin;
         public MusicBeeApiInterface mbApiInterface;
         private PluginInfo about = new PluginInfo();
+
         public PluginInfo Initialise(IntPtr apiInterfacePtr)
         {
             _MusicBeeMirrorPlugin = this;
@@ -115,6 +117,7 @@ namespace MusicBeePlugin
                 if (myForm.serverButton.Checked && isFromRemoteClient == false)
                 {
                     //Notification is coming from the server, throw it away for now until full mirror mode is implemented
+                    ProcessNotification(sourceFileUrl, type);
                 }
                 else if (myForm.serverButton.Checked && isFromRemoteClient)
                 {
@@ -161,6 +164,7 @@ namespace MusicBeePlugin
 
                 case NotificationType.TrackChanged:
                     string artist = mbApiInterface.NowPlaying_GetFileTag(MetaDataType.Artist);
+                    string playingFile = mbApiInterface.NowPlaying_GetFileUrl();
                     // ...
                     break;
 

@@ -93,6 +93,7 @@
     <Compile Include="TcpServer.cs" />
     <Compile Include="MusicBeeMirrorPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
