@@ -37,7 +37,7 @@ namespace MusicBeePlugin
 
             private static readonly string[] ignoredWindowClasses = { "#32770", "Tooltips_window32", "SysShadow", "IME" };
 
-            private static readonly string[] ignoredWindowTitles = { "Microsoft Visual Studio", "TeamViewer", "Radeon Settings", "Chrome" };
+            private static readonly string[] ignoredWindowTitles = { ""};
 
             public static void PreventChildWindowsFromShowing(IntPtr hWnd)
             {
