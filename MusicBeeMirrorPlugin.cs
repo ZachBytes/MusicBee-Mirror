@@ -140,7 +140,7 @@ namespace MusicBeePlugin
                         byte[] data = stream.ToArray();
 
                         //Send data
-                        //TcpConnectClient.SendData(data, myForm.ServerIPTextbox.Text, Convert.ToInt32(myForm.PortTextbox.Text));
+                        TcpConnectClient.SendData(data, myForm.ServerIPTextbox.Text, Convert.ToInt32(myForm.PortTextbox.Text));
                     }
                 }
             }

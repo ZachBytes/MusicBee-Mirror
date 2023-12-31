@@ -192,14 +192,13 @@ namespace MusicBeePlugin
                 if (windowTitleFromStruct == "TimerNativeWindow")
                     return CallNextHookEx(hookHandleCBT, nCode, wParam, lParam);
 
-                // Example: Prevent windows with "Error" in the title from being created
                 string windowTitle = GetWindowTitle(wParam);
 
-                Console.WriteLine($"Event received - Type: CBT Event: {nCode}, Title: {windowTitle}, TitleFromStruct: {windowTitleFromStruct}");
+                Console.WriteLine($"Event received - Type: CBT Event: {nCode}, TitleFromStruct: {windowTitleFromStruct}");
 
-                if (windowTitle.ToLower().Contains("error") || windowTitleFromStruct.ToLower().Contains("error"))
+                if (windowTitleFromStruct.ToLower().Contains("confirmation") || windowTitleFromStruct.ToLower().Contains("error"))
                 {
-                    Console.WriteLine("Preventing window creation.");
+                    Console.WriteLine($"Preventing {windowTitleFromStruct} window creation.");
                     return (IntPtr)1; // Prevent the window from being created
                 }
             }
