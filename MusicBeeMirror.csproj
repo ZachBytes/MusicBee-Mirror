@@ -42,6 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -82,7 +83,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FindWindow.cs" />
+    <Compile Include="PopupBlocker.cs" />
     <Compile Include="MusicBeeMirror.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -94,8 +95,6 @@
     <Compile Include="TcpServer.cs" />
     <Compile Include="MusicBeeMirrorPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils.cs" />
-    <Compile Include="WindowPreventer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
