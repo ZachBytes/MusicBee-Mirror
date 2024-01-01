@@ -68,7 +68,7 @@ namespace MusicBeePlugin
             PortLabel.Visible = type == "client" || type == "server";
             PortTextbox.Visible = type == "client" || type == "server";
             ListenLabel.Visible = type == "server" && TcpServer.SocketThread.ThreadState == System.Threading.ThreadState.Running;
-            CommandTextbox.Visible = type == "server" && TcpServer.SocketThread.ThreadState == System.Threading.ThreadState.Running;
+            //CommandTextbox.Visible = type == "server" && TcpServer.SocketThread.ThreadState == System.Threading.ThreadState.Running;
         }
 
         private void ListenButton_Click(object sender, EventArgs e)
@@ -79,6 +79,7 @@ namespace MusicBeePlugin
             {
                 TcpServer tcpServer = new TcpServer(serverPort, _musicBeeMirrorPlugin);
                 TcpServer.SocketThread.Start();
+                CommandTextbox.Show();
             }
             else
             {

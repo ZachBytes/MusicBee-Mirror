@@ -122,19 +122,19 @@ namespace MusicBeePlugin
             {
                 //Determine if the client or the server is receiving the notification
                 StackTrace stackTrace = new StackTrace();
-                bool isFromRemoteClient = stackTrace.GetFrame(1).GetMethod().Name == "StartTcpServer";
+                bool isFromRemoteClient = stackTrace.GetFrame(3).GetMethod().Name == "StartTcpServer";
 
                 if (myForm.serverButton.Checked && isFromRemoteClient == false)
                 {
                     //Notification is coming from the server, throw it away for now until full mirror mode is implemented
-                    ProcessNotification(sourceFileUrl, type);
+                    //ProcessNotification(sourceFileUrl, type);
                 }
                 else if (myForm.serverButton.Checked && isFromRemoteClient)
                 {
                     //Notification is coming from remote client, so process it
                     myForm.Invoke(new Action(() =>
                     {
-                        myForm.CommandTextbox.Text += $@"{type}: ""{sourceFileUrl}"" {Environment.NewLine}";
+                        myForm.CommandTextbox.Text += $@"Remote notification received: {type}: ""{sourceFileUrl}"" {Environment.NewLine}";
                     }));
                     ProcessNotification(sourceFileUrl, type);
                 }

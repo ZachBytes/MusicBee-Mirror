@@ -59,25 +59,30 @@ namespace MusicBeePlugin
                     AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(MyTypeResolveEventHandler);
 
                     // Deserialize fileUrl and type
-                    string sourceFileUrl;
-                    NotificationType type = new NotificationType();
+                    //string sourceFileUrl;
+                    //NotificationType type = new NotificationType();
                     
-                    using (MemoryStream memoryStream = new MemoryStream(buffer))
-                    {
-                        BinaryFormatter formatter = new BinaryFormatter();
-                        type = (NotificationType)formatter.Deserialize(memoryStream);
-                        sourceFileUrl = (string)formatter.Deserialize(memoryStream);
-                    }
+                    //using (MemoryStream memoryStream = new MemoryStream(buffer))
+                    //{
+                    //    BinaryFormatter formatter = new BinaryFormatter();
+                    //    type = (NotificationType)formatter.Deserialize(memoryStream);
+                    //    sourceFileUrl = (string)formatter.Deserialize(memoryStream);
+                    //}
 
                     // Deserialize JSON data
                     string jsonData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                     NotificationData notificationData = JsonConvert.DeserializeObject<NotificationData>(jsonData);
 
-                    // Use the deserialized fileUrl and type
-                    //_MusicBeeMirrorPlugin.ReceiveNotification(sourceFileUrl, type);
-
-                    // Use the deserialized data
-                    _MusicBeeMirrorPlugin.ReceiveNotification(notificationData.SourceFileUrl, notificationData.Type);
+                    if (notificationData != null)
+                    {
+                        // Use the deserialized data
+                        _MusicBeeMirrorPlugin.ReceiveNotification(notificationData.SourceFileUrl, notificationData.Type);
+                    }
+                    else
+                    {
+                        // Handle the case where deserialization failed or data is not in the expected format
+                        Console.WriteLine("Received invalid or null notification data.");
+                    }
                 }
 
             }
