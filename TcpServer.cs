@@ -13,6 +13,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Reflection;
 using System.Drawing;
+using Newtonsoft.Json;
 
 namespace MusicBeePlugin
 {
@@ -40,6 +41,11 @@ namespace MusicBeePlugin
             TcpListener server = new TcpListener(IPAddress.Any, portInt);
             server.Start();
 
+            myForm.Invoke(new Action(() =>
+            {
+                myForm.CommandTextbox.Text += $"TcpServer listening on port {portInt} {Environment.NewLine}";
+            }));
+
             while (true)
             {
 
@@ -63,8 +69,15 @@ namespace MusicBeePlugin
                         sourceFileUrl = (string)formatter.Deserialize(memoryStream);
                     }
 
+                    // Deserialize JSON data
+                    string jsonData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                    NotificationData notificationData = JsonConvert.DeserializeObject<NotificationData>(jsonData);
+
                     // Use the deserialized fileUrl and type
-                    _MusicBeeMirrorPlugin.ReceiveNotification(sourceFileUrl, type);
+                    //_MusicBeeMirrorPlugin.ReceiveNotification(sourceFileUrl, type);
+
+                    // Use the deserialized data
+                    _MusicBeeMirrorPlugin.ReceiveNotification(notificationData.SourceFileUrl, notificationData.Type);
                 }
 
             }

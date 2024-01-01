@@ -8,6 +8,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Diagnostics;
 using static System.Net.WebRequestMethods;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace MusicBeePlugin
 {
@@ -104,9 +106,17 @@ namespace MusicBeePlugin
         {
         }
 
+        // Define a class to represent the notification data
+        [Serializable]
+        public class NotificationData
+        {
+            public NotificationType Type { get; set; }
+            public string SourceFileUrl { get; set; }
+        }
+
         // receive event notifications from MusicBee
         // you need to set about.ReceiveNotificationFlags = PlayerEvents to receive all notifications, and not just the startup event
-        public void ReceiveNotification(string sourceFileUrl, NotificationType type)
+        public async void ReceiveNotification(string sourceFileUrl, NotificationType type)
         {
             if (myForm != null)
             {
@@ -131,17 +141,25 @@ namespace MusicBeePlugin
                 else if (myForm.clientButton.Checked)
                 {
                     //Client, so serialize and forward the Notification to the server using sockets
-                    BinaryFormatter formatter = new BinaryFormatter();
-                    using (MemoryStream stream = new MemoryStream())
-                    {
-                        formatter.Serialize(stream, type);
-                        if (sourceFileUrl is null) sourceFileUrl = "";
-                        formatter.Serialize(stream, sourceFileUrl);
-                        byte[] data = stream.ToArray();
+                    //BinaryFormatter formatter = new BinaryFormatter();
+                    //using (MemoryStream stream = new MemoryStream())
+                    //{
+                    //    formatter.Serialize(stream, type);
+                    //    if (sourceFileUrl is null) sourceFileUrl = "";
+                    //    formatter.Serialize(stream, sourceFileUrl);
+                    //    byte[] data = stream.ToArray();
 
-                        //Send data
-                        TcpConnectClient.SendData(data, myForm.ServerIPTextbox.Text, Convert.ToInt32(myForm.PortTextbox.Text));
-                    }
+                    //    //Send data
+                    //    await TcpConnectClient.SendDataAsync(data, myForm.ServerIPTextbox.Text, Convert.ToInt32(myForm.PortTextbox.Text));
+                    //}
+
+                    var notificationData = new NotificationData { Type = type, SourceFileUrl = sourceFileUrl };
+                    string jsonData = JsonConvert.SerializeObject(notificationData);
+                    byte[] data = Encoding.UTF8.GetBytes(jsonData);
+
+                    // Send data with a timeout of 5 seconds
+                    await TcpConnectClient.SendDataAsync(data, myForm.ServerIPTextbox.Text, Convert.ToInt32(myForm.PortTextbox.Text));
+
                 }
             }
         }

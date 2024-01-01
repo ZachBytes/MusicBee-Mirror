@@ -11,46 +11,64 @@ namespace MusicBeePlugin
     using System;
     using System.IO;
     using System.Net.Sockets;
+    using System.Threading;
     using System.Threading.Tasks;
 
     internal class TcpConnectClient
     {
-        public static async Task SendData(byte[] data, string ipAddress, int port)
+        private const int MaxReconnectionAttempts = 3;
+        public static async Task SendDataAsync(byte[] data, string ipAddress, int port)
         {
+            int attempt = 0;
             //using (TcpClient client = new TcpClient(ipAddress, port))
             //using (NetworkStream stream = client.GetStream())
             //{
             //    stream.Write(data, 0, data.Length);
             //}
-
-            using (TcpClient client = new TcpClient())
+            while (attempt < MaxReconnectionAttempts)
             {
-                try
+                using (TcpClient client = new TcpClient())
                 {
-                    Task connectTask = client.ConnectAsync(ipAddress, port);
-                    Task delayTask = Task.Delay(5000); // Set a timeout of 5000 milliseconds
-
-                    // Wait for either the connection or the timeout
-                    await Task.WhenAny(connectTask, delayTask);
-
-                    if (connectTask.IsCompleted)
+                    try
                     {
-                        // Connection succeeded
-                        using (NetworkStream stream = client.GetStream())
+                        Task connectTask = client.ConnectAsync(ipAddress, port);
+                        Task delayTask = Task.Delay(5000); // Set a timeout of 5000 milliseconds
+
+                        // Wait for either the connection or the timeout
+                        await Task.WhenAny(connectTask, delayTask);
+
+                        if (connectTask.IsCompleted)
                         {
-                            await stream.WriteAsync(data, 0, data.Length);
+                            if (client.Connected)
+                            {
+                                // Connection succeeded
+                                using (NetworkStream stream = client.GetStream())
+                                {
+                                    await stream.WriteAsync(data, 0, data.Length);
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("TcpClient not connected");
+                                System.Windows.Forms.MessageBox.Show("TcpClient not connected");
+                            }
+                        }
+                        else
+                        {
+                            // Handle timeout
+                            Console.WriteLine("TcpClient connection timeout");
+                            System.Windows.Forms.MessageBox.Show("TcpClient connection timeout");
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        // Handle timeout
-                        Console.WriteLine("Connection timeout");
+                        Console.WriteLine($"Exception caught: {ex.Message}");
                     }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Exception caught: {ex.Message}");
-                }
+
+                // Wait for a short duration before attempting reconnection
+                Thread.Sleep(1000); // Adjust the sleep duration as needed
+                attempt++;
             }
         }
     }
